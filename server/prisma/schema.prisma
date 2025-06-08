@@ -1,0 +1,126 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 1. Enum for role
+enum BoardRole {
+  ADMIN
+  VIEWER
+  EDITOR
+}
+
+// 2. Main models
+model User {
+  id              String         @id @default(uuid())
+  name            String
+  email           String         @unique
+  password        String
+  boardsOwned     Board[]        @relation("BoardOwner")
+  boardsMember    BoardMember[]
+  cardAssignments CardMember[]
+  comments        Comment[]
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+}
+
+model Board {
+  id          String         @id @default(uuid())
+  title       String
+  description String?
+  ownerId     String
+  owner       User           @relation("BoardOwner", fields: [ownerId], references: [id])
+  lists       List[]
+  members     BoardMember[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model BoardMember {
+  id       String     @id @default(uuid())
+  board    Board      @relation(fields: [boardId], references: [id])
+  boardId  String
+  user     User       @relation(fields: [userId], references: [id])
+  userId   String
+  role     BoardRole
+
+  @@unique([boardId, userId]) // Prevents duplicate membership
+}
+
+model List {
+  id        String   @id @default(uuid())
+  title     String
+  order     Int
+  board     Board    @relation(fields: [boardId], references: [id])
+  boardId   String
+  cards     Card[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Card {
+  id          String       @id @default(uuid())
+  title       String
+  description String?
+  order       Int
+  list        List         @relation(fields: [listId], references: [id])
+  listId      String
+  comments    Comment[]
+  labels      CardLabel[]
+  members     CardMember[]
+  dueDate     DateTime?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  content   String
+  card      Card     @relation(fields: [cardId], references: [id])
+  cardId    String
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Label {
+  id        String       @id @default(uuid())
+  name      String
+  color     String       // e.g., "red", "blue"
+  cards     CardLabel[]
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+}
+
+model CardLabel {
+  id      String @id @default(uuid())
+  card    Card   @relation(fields: [cardId], references: [id])
+  cardId  String
+  label   Label  @relation(fields: [labelId], references: [id])
+  labelId String
+
+  @@unique([cardId, labelId]) // Prevents duplicate labels per card
+}
+
+model CardMember {
+  id      String @id @default(uuid())
+  card    Card   @relation(fields: [cardId], references: [id])
+  cardId  String
+  user    User   @relation(fields: [userId], references: [id])
+  userId  String
+
+  @@unique([cardId, userId]) // Prevents duplicate members per card
+}
+
