@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import cookieParser from 'cookie-parser';
 
 
 const app = express();
@@ -35,12 +36,17 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
+app.use(cookieParser());
 
 
 // import Routes 
 import authRouter from "./routes/auth_route";
+import userRouter from "./routes/user_route";
+import boardRoute from "./routes/board_route";
 
 app.use("/api/auth", authRouter);
+app.use("/api/user", userRouter);
+app.use("/api/board", boardRoute);
 
 
 app.get("/", (req, res) => {

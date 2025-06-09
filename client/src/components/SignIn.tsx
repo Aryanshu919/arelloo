@@ -6,8 +6,11 @@ import { Label } from '@/components/ui/label';
 import { Link } from 'react-router-dom';
 import axios from "axios";
 import { toast } from 'sonner';
+import { useDispatch } from 'react-redux';
+import { loginSuccess } from '@/slices /authSlice';
 
 const SignIn = () => {
+  const dispatch = useDispatch()
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -26,6 +29,7 @@ const SignIn = () => {
     console.log('Sign in form submitted:', formData);
     try {
         const response = await axios.post("http://localhost:3000/api/auth/login", formData);
+        dispatch(loginSuccess(response.data.user));
         console.log("user logged successfully", response);
         toast.success("user logged In")
 
