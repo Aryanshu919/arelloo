@@ -20,7 +20,8 @@ export const register = async (req: Request, res : Response): Promise<void> => {
 
     const existingUser = await prisma.user.findUnique({where: { email}});
     if(existingUser){
-        res.json({
+        res.status(400).json({
+            status: false,
             msg: "user already exist"
         })
         return ;
