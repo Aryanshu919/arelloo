@@ -4,8 +4,6 @@ import bcrypt from "bcrypt"
 import { generateToken } from "../utils/jwt";
 import { loginSchema, registerSchema } from "../utils/validators/auth_validator";
 
-const COOKIE_NAME = 'auth-cookie'
-
 export const register = async (req: Request, res : Response): Promise<void> => {
  console.log('logging the req', req);
     const result = registerSchema.safeParse(req.body);
@@ -34,10 +32,10 @@ export const register = async (req: Request, res : Response): Promise<void> => {
   });
 
   const token = generateToken(user.id);
-  res
-    .cookie(COOKIE_NAME, token, {
+  
+  res.cookie('auth-cookie', token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: false,
       sameSite: 'lax',
       maxAge: 7 * 24 * 60 * 60 * 1000,
     })
@@ -48,8 +46,7 @@ export const register = async (req: Request, res : Response): Promise<void> => {
 };
 
 
-export const login = async(req: Request, res: Response) : Promise<void> =>{
-   
+export const login = async(req: Request, res: Response) =>{
     const result = loginSchema.safeParse(req.body);
     if (!result.success) {
         const errors = result.error.format();
@@ -68,16 +65,17 @@ export const login = async(req: Request, res: Response) : Promise<void> =>{
     if (!isMatch) res.status(400).json({ message: 'Invalid credentials' });
 
     const token = generateToken(user.id);
-    res
-        .cookie(COOKIE_NAME, token, {
+        res.cookie('auth-cookie', token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
+        secure: false,
         sameSite: 'lax',
         maxAge: 7 * 24 * 60 * 60 * 1000,
-        })
-        .json({ message: 'Login successful', user: { id: user.id, email: user.email, name: user.name } });
+        });
+        res.json({ message: 'Login successful', user: { id: user.id, email: user.email, name: user.name, token:token } });
+    
+    return;
 };
 
 export const logout = (req: Request, res: Response) => {
-  res.clearCookie(COOKIE_NAME).json({ message: 'Logged out' });
+  res.clearCookie('auth-cookie').json({ message: 'Logged out' });
 };

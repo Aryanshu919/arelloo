@@ -25,7 +25,7 @@ export const checkBoardRole = (requiredRoles: string[]) => {
     // If user is board owner, allow all access
     if (board.ownerId === userId) {
       next();
-        return
+      return
     }
 
     // Otherwise, check board member role

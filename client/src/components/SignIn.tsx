@@ -28,7 +28,7 @@ const SignIn = () => {
     e.preventDefault();
     console.log('Sign in form submitted:', formData);
     try {
-        const response = await axios.post("http://localhost:3000/api/auth/login", formData);
+        const response = await axios.post("http://localhost:3000/api/auth/login", formData, {withCredentials:true});
         dispatch(loginSuccess(response.data.user));
         console.log("user logged successfully", response);
         toast.success("user logged In")

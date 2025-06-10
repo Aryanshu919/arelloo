@@ -16,10 +16,8 @@ interface TokenPayload {
 }
 
 export const verifyUser = (req: Request, res: Response, next: NextFunction):void => {
-  
-  console.log(req.cookies);
-  const token = req.cookies['auth-cookie']
-  console.log("loggin the token", token);
+  const token = req.cookies['auth-cookie'];
+  console.log("logging the token", token)
   if (!token) {
     res.status(401).json({ message: 'Not authenticated' });
     return;
@@ -32,7 +30,7 @@ export const verifyUser = (req: Request, res: Response, next: NextFunction):void
     next();
   } catch (err: any) {
     if (err.name === 'TokenExpiredError') {
-      res.clearCookie('auth_token');
+     res.clearCookie('auth_token');
      res.status(401).json({ message: 'Session expired. Please log in again.' });
      return;
     }

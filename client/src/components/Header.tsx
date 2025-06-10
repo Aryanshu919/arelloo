@@ -1,6 +1,6 @@
 
 import { Button } from '@/components/ui/button';
-import {Search} from 'lucide-react';
+import {FolderKanban, Search} from 'lucide-react';
 import { useSelector , useDispatch} from 'react-redux';
 import { Link } from 'react-router-dom';
 import type { RootState } from '../store';
@@ -25,6 +25,14 @@ const Header = () => {
                 Arello
               </h1>
             </Link>
+
+            { isAuthenticated &&
+               <nav className="hidden md:flex items-center space-x-6 ml-8">
+              <Link to="/boards" className="flex items-center space-x-2 text-foreground hover:text-primary transition-colors">
+                <FolderKanban className="w-4 h-4 " />
+                <span>Boards</span>
+              </Link>
+            </nav>}
           </div>
 
           {/* Search Bar */}

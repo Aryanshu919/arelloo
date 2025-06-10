@@ -19,6 +19,7 @@ export const getBoards = async (req: Request, res: Response) => {
 };
 
 export const createBoard = async (req: Request, res: Response) => {
+    console.log("inside the createBoard controller");
   const parsed = createBoardSchema.safeParse(req.body);
   if (!parsed.success) {
      res.status(400).json({ errors: parsed.error.format() });
