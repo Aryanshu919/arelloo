@@ -2,7 +2,7 @@
 import { Button } from '@/components/ui/button';
 import {FolderKanban, Search} from 'lucide-react';
 import { useSelector , useDispatch} from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import type { RootState } from '../store';
 import { logout } from '@/slices /authSlice';
 import { toast } from 'sonner';

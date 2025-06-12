@@ -1,9 +1,13 @@
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Plus, MoreHorizontal, Calendar, MessageSquare, Paperclip } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import CreateBoard from './CreateBoard';
+import axios from 'axios';
+import CreateList from './CreateList';
+import { useParams } from 'react-router-dom';
 
 interface TaskCard {
   id: string;
@@ -44,48 +48,57 @@ const ProjectBoard: React.FC<ProjectBoardProps> = ({ boardId, boardName }) => {
         }
       ]
     },
-    {
-      id: 'in-progress',
-      title: 'In Progress',
-      cards: [
-        {
-          id: '4',
-          title: 'Implement user authentication',
-          description: 'Add login and registration functionality',
-          labels: ['Development', 'Backend'],
-          dueDate: '2024-06-20'
-        }
-      ]
-    },
-    {
-      id: 'review',
-      title: 'Review',
-      cards: []
-    },
-    {
-      id: 'done',
-      title: 'Done',
-      cards: [
-        {
-          id: '7',
-          title: 'Initial project setup',
-          description: 'Set up development environment and basic structure',
-          labels: ['Setup'],
-        }
-      ]
-    }
   ]);
+
+    useEffect(() => {
+    ;(async () => {
+      try {
+        const res = await axios.get(`http://localhost:3000/api/list/board/${boardId}`, {withCredentials: true})
+          console.log("loggin the boards by id", res.data);
+          setColumns([...columns, res.data]);
+          console.log("logging the columns", columns);
+
+          const formattedColumns: Column[] = res.data.map((list: any) => ({
+          id: list.id,
+          title: list.title,
+          cards: list.cards.map((card : any) => ({
+            id: card.id,
+            title: card.title,
+            description: card.description,
+            labels: card.labels || [],
+            dueDate: card.dueDate || null,
+          })),
+        }));
+        setColumns(formattedColumns);
+       
+      } catch (error) {
+        console.error(error);
+        console.log("Could not fetch board Details")
+      }
+    })()
+  }, [])
+
 
   const [isAddingCard, setIsAddingCard] = useState<string | null>(null);
   const [newCardTitle, setNewCardTitle] = useState('');
-
-  const addColumn = () => {
-    const newColumn: Column = {
-      id: `column-${Date.now()}`,
-      title: 'New Column',
-      cards: []
+  const addColumn = async (title: string) => {
+ 
+    try {
+      const order = Math.floor(Math.random() * 10001);;
+      const res = await axios.post("http://localhost:3000/api/list",{title, order, boardId},{ withCredentials: true });
+      const newColumn: Column = {
+      id: res.data.id,
+      title: res.data.title,
+      cards: res.data.cards
     };
-    setColumns([...columns, newColumn]);
+      setColumns([...columns, newColumn]);
+      //  console.log("logging the list response", res)
+    } catch (error) {
+      console.error(error);
+      console.log("error while creating new list");
+    }
+  
+    
   };
 
   const addCard = (columnId: string) => {
@@ -131,19 +144,19 @@ const ProjectBoard: React.FC<ProjectBoardProps> = ({ boardId, boardName }) => {
       </div>
       
       <div className="flex gap-6 overflow-x-auto pb-6">
-        {columns.map((column) => (
+        {columns?.map((column) => (
           <div key={column.id} className="flex-shrink-0 w-72">
             <Card className="bg-card border border-border shadow-sm">
               <div className="p-4">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-semibold text-foreground">{column.title}</h3>
-                  <Button variant="ghost" size="icon" className="h-6 w-6 hover:bg-accent">
+                  <Button variant="ghost" size="icon" className="h-6 w-6 hover:bg-accent text-blue-400">
                     <MoreHorizontal className="w-4 h-4" />
                   </Button>
                 </div>
 
                 <div className="space-y-3 mb-4">
-                  {column.cards.map((card) => (
+                  {column?.cards.map((card) => (
                     <Card key={card.id} className="p-3 bg-background border border-border hover:shadow-md transition-all duration-200 cursor-pointer group">
                       <div className="space-y-3">
                         {card.labels.length > 0 && (
@@ -213,6 +226,7 @@ const ProjectBoard: React.FC<ProjectBoardProps> = ({ boardId, boardName }) => {
                           setIsAddingCard(null);
                           setNewCardTitle('');
                         }}
+                        className='text-white hover:text-blue-400'
                         variant="ghost" 
                         size="sm"
                       >
@@ -224,9 +238,9 @@ const ProjectBoard: React.FC<ProjectBoardProps> = ({ boardId, boardName }) => {
                   <Button
                     onClick={() => setIsAddingCard(column.id)}
                     variant="ghost"
-                    className="w-full justify-start text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
+                    className="w-full text-white justify-start hover:bg-accent hover:text-foreground transition-colors"
                   >
-                    <Plus className="w-4 h-4 mr-2" />
+                    <Plus className="w-4 h-4 mr-2 text-white" />
                     Add a card
                   </Button>
                 )}
@@ -236,14 +250,15 @@ const ProjectBoard: React.FC<ProjectBoardProps> = ({ boardId, boardName }) => {
         ))}
         
         <div className="flex-shrink-0">
-          <Button
+          {/* <Button
             onClick={addColumn}
             variant="ghost"
-            className="w-72 h-12 border-2 border-dashed border-muted-foreground/30 hover:border-primary hover:bg-accent/50 transition-all duration-200"
+            className="w-72 h-12 text-white border-2 border-dashed border-muted-foreground/30 hover:text-blue-400 border-primary hover:bg-accent/50 transition-all duration-200"
           >
             <Plus className="w-4 h-4 mr-2" />
             Add another list
-          </Button>
+          </Button> */}
+          <CreateList onCreateList={addColumn}/>
         </div>
       </div>
     </div>

@@ -43,7 +43,7 @@ const CreateBoard: React.FC<CreateBoardProps> = ({ onCreateBoard }) => {
     <Card className="p-6">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <Label htmlFor="boardName">Board Name</Label>
+          <Label htmlFor="boardName" className='pb-2'>Board Name</Label>
           <Input
             id="boardName"
             value={boardName}
@@ -55,7 +55,7 @@ const CreateBoard: React.FC<CreateBoardProps> = ({ onCreateBoard }) => {
         </div>
         
         <div>
-          <Label htmlFor="boardDescription">Description (Optional)</Label>
+          <Label htmlFor="boardDescription" className='pb-2'>Description (Optional)</Label>
           <Input
             id="boardDescription"
             value={boardDescription}
@@ -69,6 +69,7 @@ const CreateBoard: React.FC<CreateBoardProps> = ({ onCreateBoard }) => {
             Create Board
           </Button>
           <Button 
+            className='text-white'
             type="button"
             variant="ghost" 
             size="sm"

@@ -8,6 +8,7 @@ import { ArrowLeft, Settings, Share2, MoreHorizontal } from 'lucide-react';
 
 const ProjectBoardView = () => {
   const { boardId } = useParams();
+  console.log("logging boardId", boardId)
   
   // In a real app, you'd fetch the board data based on the ID
   const boardName = getBoardName(boardId);
@@ -28,15 +29,15 @@ const ProjectBoardView = () => {
           </div>
           
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm">
+            <Button  className="text-white hover:text-blue-400" variant="outline" size="sm">
               <Share2 className="w-4 h-4 mr-2" />
               Share
             </Button>
-            <Button variant="outline" size="sm">
+            <Button className="text-white hover:text-blue-400" variant="outline" size="sm">
               <Settings className="w-4 h-4 mr-2" />
               Settings
             </Button>
-            <Button variant="ghost" size="icon">
+            <Button className="text-white hover:text-blue-400" variant="ghost" size="icon">
               <MoreHorizontal className="w-4 h-4" />
             </Button>
           </div>

@@ -19,33 +19,28 @@ interface Board {
 
 const ProjectBoards = () => {
   const {user,  isAuthenticated} = useSelector((state: RootState) => state.auth);
-  const [boards, setBoards] = useState<Board[]>([
-    {
-      id: '1',
-      title: 'Website Redesign',
-      description: 'Complete redesign of company website',
-      createdAt: '2024-06-01'
-    },
-    {
-      id: '2',
-      title: 'Mobile App Development',
-      description: 'New mobile application for iOS and Android',
-      createdAt: '2024-06-05'
-    }
-  ]);
+  const [loading, setLoading] = useState(true);
+  const [boards, setBoards] = useState<Board[]>([]);
+
     useEffect(() => {
     ;(async () => {
       try {
         const res = await axios.get(`http://localhost:3000/api/board`, {withCredentials: true})
-        console.log("loggin the boards", res);
         setBoards(res.data);
+        setLoading(false);
        
       } catch (error) {
         console.error(error);
         console.log("Could not fetch board Details")
       }
     })()
-  }, [boards])
+  }, [])
+
+   if(loading){
+    return(
+      <div className='flex justify-center items-center'>loading........</div>
+    )
+  }
 
   const handleCreateBoard = async (title: string, description: string) => {
     try {
@@ -123,7 +118,7 @@ const ProjectBoards = () => {
                     <span>3 members</span>
                   </div>
                   <Link to={`/board/${board.id}`}>
-                    <Button size="sm" variant="outline">
+                    <Button size="sm" className='text-white hover:text-blue-400' variant="outline">
                       Open Board
                     </Button>
                   </Link>

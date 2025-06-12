@@ -29,8 +29,8 @@ export const getListsByBoard = async (req: Request, res: Response) => {
     const lists = await prisma.list.findMany({
       where: { boardId },
       orderBy: { order: 'asc' },
+      include:{ cards: true },
     });
-
     res.json(lists);
   } catch (err) {
     res.status(500).json({ message: 'Error fetching lists', error: err });

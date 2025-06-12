@@ -17,7 +17,6 @@ interface TokenPayload {
 
 export const verifyUser = (req: Request, res: Response, next: NextFunction):void => {
   const token = req.cookies['auth-cookie'];
-  console.log("logging the token", token)
   if (!token) {
     res.status(401).json({ message: 'Not authenticated' });
     return;
@@ -26,7 +25,6 @@ export const verifyUser = (req: Request, res: Response, next: NextFunction):void
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as TokenPayload;
     req.user = decoded;
-    console.log("log decode",decoded);
     next();
   } catch (err: any) {
     if (err.name === 'TokenExpiredError') {

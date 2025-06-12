@@ -3,14 +3,15 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { toast } from 'sonner';
 import { useDispatch } from 'react-redux';
 import { loginSuccess } from '@/slices /authSlice';
 
 const SignIn = () => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -32,6 +33,7 @@ const SignIn = () => {
         dispatch(loginSuccess(response.data.user));
         console.log("user logged successfully", response);
         toast.success("user logged In")
+        navigate("/boards");
 
     } catch (error) {
          console.error('Error registering:', error);
