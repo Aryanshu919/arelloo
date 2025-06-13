@@ -7,11 +7,11 @@ import { Badge } from '@/components/ui/badge';
 import CreateBoard from './CreateBoard';
 import axios from 'axios';
 import CreateList from './CreateList';
-import { useParams } from 'react-router-dom';
 
 interface TaskCard {
   id: string;
   title: string;
+  listId: string;
   description?: string;
   labels: string[];
   dueDate?: string;
@@ -30,24 +30,6 @@ interface ProjectBoardProps {
 
 const ProjectBoard: React.FC<ProjectBoardProps> = ({ boardId, boardName }) => {
   const [columns, setColumns] = useState<Column[]>([
-    {
-      id: 'todo',
-      title: 'To Do',
-      cards: [
-        {
-          id: '1',
-          title: 'Design new landing page',
-          description: 'Create wireframes and mockups for the new homepage',
-          labels: ['Design', 'High Priority'],
-          dueDate: '2024-06-15'
-        },
-        {
-          id: '2',
-          title: 'Set up project repository',
-          labels: ['Development'],
-        }
-      ]
-    },
   ]);
 
     useEffect(() => {
@@ -81,10 +63,11 @@ const ProjectBoard: React.FC<ProjectBoardProps> = ({ boardId, boardName }) => {
 
   const [isAddingCard, setIsAddingCard] = useState<string | null>(null);
   const [newCardTitle, setNewCardTitle] = useState('');
+
   const addColumn = async (title: string) => {
  
     try {
-      const order = Math.floor(Math.random() * 10001);;
+      const order = Math.floor(Math.random() * 10001);
       const res = await axios.post("http://localhost:3000/api/list",{title, order, boardId},{ withCredentials: true });
       const newColumn: Column = {
       id: res.data.id,
@@ -101,11 +84,18 @@ const ProjectBoard: React.FC<ProjectBoardProps> = ({ boardId, boardName }) => {
     
   };
 
-  const addCard = (columnId: string) => {
+  const addCard = async (listId: string) => {
+    const order = Math.floor(Math.random() * 10001);
+    console.log(order);
+    console.log("newcardtitle", newCardTitle);
+    const title = newCardTitle;
+    const res = await axios.post("http://localhost:3000/api/card",{ title, order, listId},{withCredentials:true});
+    console.log(res)
     if (newCardTitle.trim()) {
       const newCard: TaskCard = {
-        id: `card-${Date.now()}`,
-        title: newCardTitle,
+        id: res.data.id,
+        title: res.data.title,
+        listId: columnId || " ",
         labels: []
       };
 
