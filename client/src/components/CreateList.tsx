@@ -14,11 +14,10 @@ const CreateList:React.FC<CreateListProps> = ({onCreateList}) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("creating a list")
-    if (list.trim()) {
       onCreateList(list);
       setList('');
       setIsCreating(false);
-    }
+    
   }
 
   if(!isCreating){
@@ -44,8 +43,6 @@ const CreateList:React.FC<CreateListProps> = ({onCreateList}) => {
                 autoFocus
               />
             </div>
-            
-    
             <div className="flex gap-2">
               <Button type="submit" size="sm">
                 Add list

@@ -12,6 +12,10 @@ export const createCard = async (req: Request, res: Response) => {
   const { title, description, order, listId, dueDate } = parsed.data;
   const card = await prisma.card.create({
     data: { title, description, order, listId, dueDate },
+    include:{
+      labels: true,
+      comments: true,
+    }
   });
   res.status(201).json(card);
 };

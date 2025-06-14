@@ -14,7 +14,10 @@ export const createList = async (req: Request, res: Response) => {
 
   try {
     const list = await prisma.list.create({
-      data: { title, order, boardId }
+      data: { title, order, boardId },
+      include:{
+        cards: true,
+      }
     });
 
     res.status(201).json(list);
@@ -29,7 +32,12 @@ export const getListsByBoard = async (req: Request, res: Response) => {
     const lists = await prisma.list.findMany({
       where: { boardId },
       orderBy: { order: 'asc' },
-      include:{ cards: true },
+      include:{ cards: {
+        include:{
+          comments: true,
+          labels: true,
+        }
+      }},
     });
     res.json(lists);
   } catch (err) {

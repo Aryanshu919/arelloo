@@ -14,6 +14,7 @@ interface TaskCard {
   listId: string;
   description?: string;
   labels: string[];
+  comments: string[];
   dueDate?: string;
 }
 
@@ -28,9 +29,11 @@ interface ProjectBoardProps {
   boardName: string;
 }
 
-const ProjectBoard: React.FC<ProjectBoardProps> = ({ boardId, boardName }) => {
-  const [columns, setColumns] = useState<Column[]>([
-  ]);
+const 
+ProjectBoard: React.FC<ProjectBoardProps> = ({ boardId, boardName }) => {
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [isAddingCard, setIsAddingCard] = useState<string | null>(null);
+  const [newCardTitle, setNewCardTitle] = useState('');
 
     useEffect(() => {
     ;(async () => {
@@ -38,21 +41,20 @@ const ProjectBoard: React.FC<ProjectBoardProps> = ({ boardId, boardName }) => {
         const res = await axios.get(`http://localhost:3000/api/list/board/${boardId}`, {withCredentials: true})
           console.log("loggin the boards by id", res.data);
           setColumns([...columns, res.data]);
-          console.log("logging the columns", columns);
-
           const formattedColumns: Column[] = res.data.map((list: any) => ({
           id: list.id,
           title: list.title,
           cards: list.cards.map((card : any) => ({
             id: card.id,
             title: card.title,
+            comments: card.comments || [],
             description: card.description,
             labels: card.labels || [],
             dueDate: card.dueDate || null,
           })),
         }));
         setColumns(formattedColumns);
-       
+        
       } catch (error) {
         console.error(error);
         console.log("Could not fetch board Details")
@@ -61,21 +63,21 @@ const ProjectBoard: React.FC<ProjectBoardProps> = ({ boardId, boardName }) => {
   }, [])
 
 
-  const [isAddingCard, setIsAddingCard] = useState<string | null>(null);
-  const [newCardTitle, setNewCardTitle] = useState('');
+ 
 
   const addColumn = async (title: string) => {
- 
+    
     try {
       const order = Math.floor(Math.random() * 10001);
       const res = await axios.post("http://localhost:3000/api/list",{title, order, boardId},{ withCredentials: true });
       const newColumn: Column = {
-      id: res.data.id,
-      title: res.data.title,
-      cards: res.data.cards
-    };
+        id: res.data.id,
+        title: res.data.title,
+        cards: res.data.cards
+      };
       setColumns([...columns, newColumn]);
-      //  console.log("logging the list response", res)
+
+      
     } catch (error) {
       console.error(error);
       console.log("error while creating new list");
@@ -87,20 +89,20 @@ const ProjectBoard: React.FC<ProjectBoardProps> = ({ boardId, boardName }) => {
   const addCard = async (listId: string) => {
     const order = Math.floor(Math.random() * 10001);
     console.log(order);
-    console.log("newcardtitle", newCardTitle);
     const title = newCardTitle;
     const res = await axios.post("http://localhost:3000/api/card",{ title, order, listId},{withCredentials:true});
-    console.log(res)
+    console.log("loggint the card", res)
     if (newCardTitle.trim()) {
       const newCard: TaskCard = {
         id: res.data.id,
         title: res.data.title,
-        listId: columnId || " ",
-        labels: []
+        listId: listId || " ",
+        labels: res.data.labels,
+        comments: res.data.comments,
       };
 
       setColumns(prev => prev.map(col => 
-        col.id === columnId 
+        col.id === listId 
           ? { ...col, cards: [...col.cards, newCard] }
           : col
       ));
@@ -134,6 +136,17 @@ const ProjectBoard: React.FC<ProjectBoardProps> = ({ boardId, boardName }) => {
       </div>
       
       <div className="flex gap-6 overflow-x-auto pb-6">
+         <div className="flex-shrink-0">
+          {/* <Button
+            onClick={addColumn}
+            variant="ghost"
+            className="w-72 h-12 text-white border-2 border-dashed border-muted-foreground/30 hover:text-blue-400 border-primary hover:bg-accent/50 transition-all duration-200"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Add another list
+          </Button> */}
+          <CreateList onCreateList={addColumn}/>
+        </div>
         {columns?.map((column) => (
           <div key={column.id} className="flex-shrink-0 w-72">
             <Card className="bg-card border border-border shadow-sm">
@@ -177,7 +190,7 @@ const ProjectBoard: React.FC<ProjectBoardProps> = ({ boardId, boardName }) => {
                           <div className="flex items-center gap-2">
                             <div className="flex items-center gap-1 text-xs">
                               <MessageSquare className="w-3 h-3" />
-                              <span>2</span>
+                              <span>{card.comments.length}</span>
                             </div>
                             <div className="flex items-center gap-1 text-xs">
                               <Paperclip className="w-3 h-3" />
@@ -239,17 +252,7 @@ const ProjectBoard: React.FC<ProjectBoardProps> = ({ boardId, boardName }) => {
           </div>
         ))}
         
-        <div className="flex-shrink-0">
-          {/* <Button
-            onClick={addColumn}
-            variant="ghost"
-            className="w-72 h-12 text-white border-2 border-dashed border-muted-foreground/30 hover:text-blue-400 border-primary hover:bg-accent/50 transition-all duration-200"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Add another list
-          </Button> */}
-          <CreateList onCreateList={addColumn}/>
-        </div>
+       
       </div>
     </div>
   );

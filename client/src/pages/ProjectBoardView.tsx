@@ -1,17 +1,31 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Header from '../components/Header';
 import ProjectBoard from '../components/ProjectBoard';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Settings, Share2, MoreHorizontal } from 'lucide-react';
+import axios from 'axios';
 
 const ProjectBoardView = () => {
   const { boardId } = useParams();
   console.log("logging boardId", boardId)
-  
+  const boardName = getBoardName(boardId)
   // In a real app, you'd fetch the board data based on the ID
-  const boardName = getBoardName(boardId);
+    useEffect(() => {
+    ;(async () => {
+      try {
+        const res = await axios.get(`http://localhost:3000/api/list/board/${boardId}`, {withCredentials: true})
+          console.log("loggin the boards by id", res.data);
+
+        
+      } catch (error) {
+        console.error(error);
+        console.log("Could not fetch board Details")
+      }
+    })()
+  }, [])
+  ;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
@@ -23,7 +37,7 @@ const ProjectBoardView = () => {
             <Link to="/boards">
               <Button variant="ghost" size="sm">
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Boards
+                  Back to Boards
               </Button>
             </Link>
           </div>

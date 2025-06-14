@@ -17,7 +17,7 @@ function App() {
         <Route path="/register" element={<RegisterPage/>} />
         <Route path="/signin" element={<SignInPage />} />
 
-        <Route path="/boards" element={<PrivateRoute> <ProjectBoards /> </PrivateRoute>} />
+        <Route path="/boards" element={<ProjectBoards />} />
         <Route path="/board/:boardId" element={<ProjectBoardView />} />
         <Route path="*" element={<NotFound/>} />
       </Routes>
