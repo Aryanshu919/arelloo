@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import CreateBoard from './CreateBoard';
 import axios from 'axios';
 import CreateList from './CreateList';
+import CardEditModal from './CardEditModal';
 
 interface TaskCard {
   id: string;
@@ -34,6 +35,8 @@ ProjectBoard: React.FC<ProjectBoardProps> = ({ boardId, boardName }) => {
   const [columns, setColumns] = useState<Column[]>([]);
   const [isAddingCard, setIsAddingCard] = useState<string | null>(null);
   const [newCardTitle, setNewCardTitle] = useState('');
+  const [selectCardId, setSelectCardId] = useState<string | null>(null);
+  const [showModal , setShowModal] = useState(false);
 
     useEffect(() => {
     ;(async () => {
@@ -128,6 +131,12 @@ ProjectBoard: React.FC<ProjectBoardProps> = ({ boardId, boardName }) => {
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   };
 
+  function handleCardClick(cardId: string) {
+    setSelectCardId(cardId);
+    setShowModal(true)
+    
+  }
+
   return (
     <div className="w-full">
       <div className="mb-6">
@@ -161,7 +170,7 @@ ProjectBoard: React.FC<ProjectBoardProps> = ({ boardId, boardName }) => {
                 <div className="space-y-3 mb-4">
                   {column?.cards.map((card) => (
                     <Card key={card.id} className="p-3 bg-background border border-border hover:shadow-md transition-all duration-200 cursor-pointer group">
-                      <div className="space-y-3">
+                      <div onClick={() => handleCardClick(card.id)} className="space-y-3">
                         {card.labels.length > 0 && (
                           <div className="flex flex-wrap gap-1">
                             {card.labels.map((label, index) => (
@@ -186,6 +195,7 @@ ProjectBoard: React.FC<ProjectBoardProps> = ({ boardId, boardName }) => {
                           </p>
                         )}
 
+                   
                         <div className="flex items-center justify-between text-muted-foreground">
                           <div className="flex items-center gap-2">
                             <div className="flex items-center gap-1 text-xs">
@@ -206,9 +216,16 @@ ProjectBoard: React.FC<ProjectBoardProps> = ({ boardId, boardName }) => {
                           )}
                         </div>
                       </div>
+                      {
+                        selectCardId === card.id &&  
+                              <CardEditModal isVisible={showModal} onClose={() => {
+                                setShowModal(false);
+                              }} cardId ={card.id}/>
+                       }
                     </Card>
                   ))}
                 </div>
+                
 
                 {isAddingCard === column.id ? (
                   <div className="space-y-2">

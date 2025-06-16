@@ -27,7 +27,14 @@ export const getCardsByList = async (req: Request, res: Response) => {
 };
 
 export const getCardById = async (req: Request, res: Response) => {
-  const card = await prisma.card.findUnique({ where: { id: req.params.id } });
+  const card = await prisma.card.findUnique({ 
+    where: { id: req.params.id },
+    include:{
+      comments: true,
+      labels: true,
+      members: true,
+    }
+  });
   if (!card) {
     res.status(404).json({ message: 'Card not found' });
     return;
