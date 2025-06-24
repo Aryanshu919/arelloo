@@ -15,7 +15,7 @@ interface Card {
 
 const CardEditModal = ({isVisible, cardId , onClose}) => {
 
-    const [card, setCard] = useState<Card[]>([]);
+    const [card, setCard] = useState<Card>();
 
     console.log("logging the card : ", card);
 
@@ -34,13 +34,21 @@ const CardEditModal = ({isVisible, cardId , onClose}) => {
 
 
   if(!isVisible) return null;
+
   return (
-    <div className='absolute flex justify-center inset-0 top-40 left-96 items-center w-2xl h-1/2 bg-gray-300 rounded-sm'>
-        <div onClick={() => onClose()} className='absolute top-0 right-0 bg-gray-300 rounded-sm'>
-            <CircleX className='pt-1'/>
-            <div></div>
+    <div className='absolute flex flex-col inset-0 top-40  max-w-2xl h-1/2 bg-gray-300 rounded-sm mx-auto'>
+        <div onClick={() => onClose()} className='flex flex-row-reverse'>
+           <CircleX className='pt-1'/>  
         </div>
-    </div>
+        <div className='flex justify-evenly w-full bg-pink-300'>
+          <div>
+            {card?.title}
+          </div>
+          <div>
+            comment and activity section
+          </div>
+        </div>
+    </div>  
   )
 }
 
