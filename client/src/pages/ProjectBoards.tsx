@@ -4,11 +4,12 @@ import Header from '../components/Header';
 import CreateBoard from '../components/CreateBoard';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { FolderKanban, Users, Calendar } from 'lucide-react';
+import { FolderKanban, Users, Calendar, AlertTriangle } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import type { RootState } from '@/store';
 import axios from 'axios';
 import { toast } from 'sonner';
+import { Trash2 } from 'lucide-react';
 
 interface Board {
   id: string;
@@ -19,11 +20,12 @@ interface Board {
 
 const ProjectBoards = () => {
   const {user,  isAuthenticated} = useSelector((state: RootState) => state.auth);
+  const [deleteBoard, setDeleteBoard] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [boards, setBoards] = useState<Board[]>([]);
 
-    useEffect(() => {
-    ;(async () => {
+  useEffect(() => {
+    (async () => {
       try {
         const res = await axios.get(`http://localhost:3000/api/board`, {withCredentials: true})
         setBoards(res.data);
@@ -34,7 +36,7 @@ const ProjectBoards = () => {
         console.log("Could not fetch board Details")
       }
     })()
-  }, [])
+  }, [deleteBoard])
 
    if(loading){
     return(
@@ -62,6 +64,18 @@ const ProjectBoards = () => {
     }
    
   };
+
+  const handleDelete = async (boardId: string) => {
+    setDeleteBoard(boardId);
+      try {
+        const res = await axios.delete(`http://localhost:3000/api/board/${boardId}`,{ withCredentials: true })
+        console.log("board delete Successfully")
+        
+      } catch (error) {
+        console.error(error)
+      }
+    setDeleteBoard(null);
+  }
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -94,10 +108,13 @@ const ProjectBoards = () => {
             <Card key={board.id} className="p-6 hover:shadow-lg transition-shadow duration-200">
               <div className="flex flex-col h-full">
                 <div className="flex items-start justify-between mb-4">
-                  <FolderKanban className="w-8 h-8 text-blue-500" />
-                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                  <FolderKanban className="w-5 h-5 text-blue-500" />
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
                     <Calendar className="w-3 h-3" />
                     {formatDate(board.createdAt)}
+                    <div >
+                      <Trash2 onClick={() => handleDelete(board.id)} className='size-5 hover:shadow-lg transition-shadow duration-200'/>
+                    </div>
                   </div>
                 </div>
 
