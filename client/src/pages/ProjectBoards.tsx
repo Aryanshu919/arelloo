@@ -10,6 +10,7 @@ import type { RootState } from '@/store';
 import axios from 'axios';
 import { toast } from 'sonner';
 import { Trash2 } from 'lucide-react';
+import AddMemberModal from '@/components/AddMemberModal';
 
 interface Board {
   id: string;
@@ -23,6 +24,9 @@ const ProjectBoards = () => {
   const [deleteBoard, setDeleteBoard] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [boards, setBoards] = useState<Board[]>([]);
+  const [showMemberModal, setShowMemberModal] = useState(false);
+  const [selectBoardId, setSelectBoardId] = useState<string | null>(null);
+
 
   useEffect(() => {
     (async () => {
@@ -75,6 +79,12 @@ const ProjectBoards = () => {
         console.error(error)
       }
     setDeleteBoard(null);
+  }
+
+  const handleAddMember = (boardId: string) =>{
+    console.log("handleAddMember clicked boardId: ", boardId)
+    setShowMemberModal(true)
+    setSelectBoardId(boardId);
   }
 
   const formatDate = (dateString: string) => {
@@ -130,12 +140,16 @@ const ProjectBoards = () => {
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                  <div className="flex  cursor-pointer items-center gap-1 text-xs text-muted-foreground border-black border-2 px-2 py-2 font-bold rounded-sm hover:bg-blue-400">
                     <Users className="w-3 h-3" />
-                    <span>3 members</span>
+                    <div onClick={() => handleAddMember(board.id)}>Add member</div>
+                    {
+                      selectBoardId === board.id &&
+                      <AddMemberModal isVisible={showMemberModal} onClose={() => setShowMemberModal(false)} boardId={selectBoardId}/>
+                    }
                   </div>
-                  <Link to={`/board/${board.id}`}>
-                    <Button size="sm" className='text-white hover:text-blue-400' variant="outline">
+                  <Link className='bg-black py-[1.3px] rounded-sm' to={`/board/${board.id}`}>
+                    <Button size="sm" className='text-white  hover:text-blue-400' variant="outline">
                       Open Board
                     </Button>
                   </Link>

@@ -86,36 +86,57 @@ export const deleteBoard = async (req: Request, res: Response) => {
 };
 
 export const addBoardMember = async (req: Request, res: Response) => {
-  const { id } = req.params;
+  const { id: boardId } = req.params;
 
   const parsed = addMemberSchema.safeParse(req.body);
   if (!parsed.success) {
-   res.status(400).json({ errors: parsed.error.format() });
+     res.status(400).json({ errors: parsed.error.format() });
      return;
   }
 
+  const { email, role } = parsed.data;
+
+  // 1. Find the user by email
+  const user = await prisma.user.findUnique({
+    where: { email },
+  });
+
+  if (!user) {
+     res.status(404).json({ message: "User not found" });
+     return
+  }
+
+  // 2. Prevent adding the board owner
+  if (user.id === req.user?.userId) {
+     res.status(400).json({ message: "You are already the board owner" });
+     return;
+  }
+
+  // 3. Check if the user is already a member
   const existing = await prisma.boardMember.findFirst({
     where: {
-      boardId: id,
-      userId: parsed.data.userId,
+      boardId,
+      userId: user.id,
     },
   });
 
   if (existing) {
-     res.status(400).json({ message: 'User already a member' });
+     res.status(400).json({ message: "User already a member" });
      return;
   }
 
+  // 4. Create the board member
   const member = await prisma.boardMember.create({
     data: {
-      boardId: id,
-      userId: parsed.data.userId,
-      role: 'VIEWER', // Default role
+      boardId,
+      userId: user.id,
+      role, // use selected role
     },
   });
 
-  res.status(201).json(member);
+   res.status(201).json(member);
 };
+
 
 export const removeBoardMember = async (req: Request, res: Response) => {
   const { id, uid } = req.params;

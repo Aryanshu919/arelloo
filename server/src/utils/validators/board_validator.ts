@@ -11,5 +11,6 @@ export const updateBoardSchema = z.object({
 });
 
 export const addMemberSchema = z.object({
-  userId: z.string().uuid({ message: 'Invalid user ID' }),
+  email: z.string().email(),
+  role: z.enum(["VIEWER", "EDITOR", "ADMIN"]).default("VIEWER"),
 });
