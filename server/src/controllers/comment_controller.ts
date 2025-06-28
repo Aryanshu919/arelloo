@@ -20,9 +20,15 @@ export const addCommentToCard = async (req: Request, res: Response) => {
 
 export const getCommentsForCard = async (req: Request, res: Response) => {
   const cardId = req.params.id;
-
   const comments = await prisma.comment.findMany({
     where: { cardId },
+    include:{
+      author: {
+        select:{
+          name: true,
+        }
+      },
+    },
     orderBy: { createdAt: 'asc' },
   });
 
@@ -31,8 +37,10 @@ export const getCommentsForCard = async (req: Request, res: Response) => {
 
 export const updateComment = async (req: Request, res: Response) => {
   const parsed = updateCommentSchema.safeParse(req.body);
-  if (!parsed.success) return res.status(400).json(parsed.error.format());
-
+  if (!parsed.success)  {
+    res.status(400).json(parsed.error.format());
+    return;
+  }
   const { content } = parsed.data;
 
   const comment = await prisma.comment.update({
