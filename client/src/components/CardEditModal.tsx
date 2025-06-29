@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { CircleX } from 'lucide-react';
 import axios from 'axios';
 import { MessageSquareMore } from 'lucide-react';
@@ -79,57 +79,82 @@ const CardEditModal = ({isVisible, cardId , onClose}) => {
 
   if(!isVisible) return null;
 
-  return (
-    <div className='absolute flex flex-col inset-0 top-40  max-w-2xl h-1/2 bg-gray-300 rounded-sm mx-auto border-4 border-gray-400'>
-        <div onClick={() => onClose()} className='flex flex-row-reverse'>
-           <CircleX className='pt-1'/>  
-        </div>
-        {
-          loading ? (<div className='w-full text-center'> Loading.... </div>) : (
-                    <div className='flex w-full'>
-          <div className='basis-1/2 p-1.5'>
-            <div className='ml-2'>
-              <h2 className=' text-2xl font-bold'>{card?.title}</h2>
-            </div>
-            <div className='flex gap-1 items-center ml-2 mt-2'>
-              <NotebookText/>
-              <h2 className='font-semibold text-xl'>Description</h2>
-            </div>
-            <div>
-              
-            </div>
-            
-          </div>
-          <div className='basis-1/2 overflow-auto p-2'> 
-          <div className='flex gap-x-2'>
-            <MessageSquareMore/>
-            <h2 className='text-base font-semibold '>Comments & activity</h2>
-          </div>
-            <div className='mt-2'>
-                <Input value={content} onChange={(e) => setContent(e.target.value)} placeholder='Write a comment....' className='outline-neutral-500 border-2 border-gray-600'/>
-                <Button onClick={handleAddComment} className='mt-2'>add</Button>
-            </div>
-            <div className='overflow-scroll max-h-[200px] '>
-             <ul>
-              {
-                comments?.map((comment, index) =>(
-                    <div key={index}>
-                     <li className='bg-blue-100 mt-1 p-2 rounded-lg' >{comment?.content}</li>
-                     <span className='italic'>comment added by : {comment?.author?.name}</span>
-                  </div>
-                ) )
-              }
-             </ul>
-            </div>
-     
-          </div>
-        
-        </div>
-          )
-        }
+  return(
+    <div className="absolute inset-0 top-40 mx-auto max-w-3xl h-[60vh] bg-white rounded-2xl border border-gray-300 shadow-xl overflow-hidden flex flex-col">
+      {/* Close Button */}
+      <div className="flex justify-end p-4">
+        <CircleX
+          className="w-6 h-6 cursor-pointer hover:text-red-500 transition"
+          onClick={onClose}
+        />
+      </div>
 
-    </div>  
-  )
+      {loading ? (
+        <div className="w-full text-center text-lg font-medium text-gray-500">
+          Loading...
+        </div>
+      ) : (
+        <div className="flex flex-1 px-6 pb-6 gap-6 overflow-hidden">
+          {/* Left Panel */}
+          <div className="w-1/2 space-y-6 overflow-y-auto pr-2">
+            {/* Title */}
+            <div>
+              <h2 className="text-3xl font-bold text-gray-800">{card?.title}</h2>
+            </div>
+
+            {/* Description */}
+            <div>
+              <div className="flex items-center gap-2 text-gray-700">
+                <NotebookText className="w-5 h-5" />
+                <h3 className="text-xl font-semibold">Description</h3>
+              </div>
+              <div className="mt-2">
+                <textarea
+                  className="ml-4 w-[90%] h-40 resize-none p-3 bg-gray-50 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  placeholder="Add a description..."
+                ></textarea>
+              </div>
+              <Button className="mt-3 w-full">Save</Button>
+            </div>
+          </div>
+
+          {/* Right Panel */}
+          <div className="w-1/2 flex flex-col overflow-hidden">
+            {/* Comments Header */}
+            <div className="flex items-center gap-2 text-gray-700">
+              <MessageSquareMore className="w-5 h-5" />
+              <h3 className="text-base font-semibold">Comments & Activity</h3>
+            </div>
+
+            {/* Add Comment Input */}
+            <div className="mt-3">
+              <Input
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                placeholder="Write a comment..."
+                className="border border-gray-400"
+              />
+              <Button onClick={handleAddComment} className="mt-2 w-full">
+                Add Comment
+              </Button>
+            </div>
+
+            {/* Comments List */}
+            <div className="mt-4 overflow-y-auto space-y-3 pr-1 max-h-56">
+              {comments?.map((comment, index) => (
+                <div key={index} className="bg-gray-100 p-3 rounded-lg shadow-sm">
+                  <p className="text-gray-800">{comment?.content}</p>
+                  <span className="text-xs text-gray-500 italic">
+                    Commented by: {comment?.author?.name}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default CardEditModal
