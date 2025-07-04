@@ -1,4 +1,5 @@
 
+import Footer from '@/components/Footer';
 import Header from '../components/Header';
 import { Button } from '@/components/ui/button';
 import { CheckCircle, Users, Zap, Target } from 'lucide-react';
@@ -106,6 +107,7 @@ const Index = () => {
           </div>
         </div>
       </main>
+      <Footer />
     </div>
   );
 };

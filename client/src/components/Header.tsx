@@ -2,7 +2,7 @@
 import { Button } from '@/components/ui/button';
 import {FolderKanban, Search} from 'lucide-react';
 import { useSelector , useDispatch} from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link }  from 'react-router-dom';
 import type { RootState } from '../store';
 import { logout } from '@/slices /authSlice';
 import { toast } from 'sonner';
@@ -21,7 +21,7 @@ const Header = () => {
               <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-lg">A</span>
               </div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 Arello
               </h1>
             </Link>

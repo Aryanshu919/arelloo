@@ -32,10 +32,16 @@ interface Comment {
   };
 }
 
-const CardEditModal = ({isVisible, cardId , onClose}) => {
+type CardEditModalProps = {
+  isVisible: boolean;
+  cardId: string;
+  onClose: () => void;
+};
+
+const CardEditModal: React.FC<CardEditModalProps> = ({ isVisible, cardId, onClose }) => {
 
     const [card, setCard] = useState<Card>();
-      const [comments, setComments] = useState<Comment[]>([]);
+    const [comments, setComments] = useState<Comment[]>([]);
     const [content, setContent] = useState("")
     const [loading, setLoading] = useState(true);
 

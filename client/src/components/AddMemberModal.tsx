@@ -2,8 +2,14 @@ import axios from 'axios';
 import React from 'react'
 import { useState } from 'react';
 import { toast } from 'sonner';
+type AddMemberModalProps = {
+  isVisible: boolean;
+  boardId: string;
+  onClose: () => void;
+};
 
-const AddMemberModal = ({isVisible , onClose, boardId}) => {
+
+const AddMemberModal: React.FC<AddMemberModalProps> = ({isVisible , onClose, boardId}) => {
   
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('viewer');
