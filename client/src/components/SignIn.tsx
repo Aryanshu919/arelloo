@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from "axios";
-import { toast } from 'sonner';
+// import { toast } from 'sonner';
 import { useDispatch } from 'react-redux';
 import { loginSuccess } from '@/slices /authSlice';
 
@@ -32,12 +32,12 @@ const SignIn = () => {
         const response = await axios.post("http://localhost:3000/api/auth/login", formData, {withCredentials:true});
         dispatch(loginSuccess(response.data.user));
         console.log("user logged successfully", response);
-        toast.success("user logged In")
+        // toast.success("user logged In")
         navigate("/boards");
 
     } catch (error) {
          console.error('Error registering:', error);
-         toast.success("worng emailid and password");
+        //  toast.success("worng emailid and password");
         
     }
   };

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React from 'react'
 import { useState } from 'react';
-import { toast } from 'sonner';
+// import { toast } from 'sonner';
 type AddMemberModalProps = {
   isVisible: boolean;
   boardId: string;
@@ -49,7 +49,7 @@ const AddMemberModal: React.FC<AddMemberModalProps> = ({isVisible , onClose, boa
     try {
         const res = await axios.post(`http://localhost:3000/api/board/${boardId}/members`,{email, role}, {withCredentials: true});
         console.log(res)
-        toast.success("member added successfully");
+        // toast.success("member added successfully");
     } catch (error) {
         console.error(error);
         console.log("error while adding members");

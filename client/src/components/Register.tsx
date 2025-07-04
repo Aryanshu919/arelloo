@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Link } from 'react-router-dom';
 import axios from "axios"
-import { toast } from 'sonner';
+// import { toast } from 'sonner';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -28,11 +28,11 @@ const Register = () => {
     try {
         const response = await axios.post("http://localhost:3000/api/auth/register", formData)
         console.log("user registered successfully", response);
-        toast.success("user registered successfully")
+        // toast.success("user registered successfully")
         
     } catch (error) {
         console.error('Error registering:', error);
-        toast.success("user already exists");
+        // toast.success("user already exists");
     }
   };
 

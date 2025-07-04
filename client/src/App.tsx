@@ -2,7 +2,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import RegisterPage from "./pages/Register";
 import NotFound from "./pages/NotFound";
-import { Toaster } from "sonner";
 import SignInPage from "./pages/SignIn";
 import ProjectBoards from "./pages/ProjectBoards";
 import ProjectBoardView from "./pages/ProjectBoardView";
@@ -23,7 +22,7 @@ function App() {
       </Routes>
 
     </BrowserRouter>
-    <Toaster/>
+   
   </div>
   );
 }

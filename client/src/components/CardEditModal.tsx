@@ -6,7 +6,7 @@ import { Input } from './ui/input';
 import { Button } from './ui/button';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../store';
-import { toast } from 'sonner';
+// import { toast } from 'sonner';
 import { NotebookText } from 'lucide-react';
 
 interface Card {
@@ -72,7 +72,7 @@ const CardEditModal: React.FC<CardEditModalProps> = ({ isVisible, cardId, onClos
       const authorId = user.id
       const res = await axios.post(`http://localhost:3000/api/comment`,{content, cardId, authorId }, {withCredentials: true});
       console.log("comment created", res)
-      toast.success("comment created successfully");
+      // toast.success("comment created successfully");
       setContent("")
     }
     

@@ -5,7 +5,7 @@ import { useSelector , useDispatch} from 'react-redux';
 import { Link }  from 'react-router-dom';
 import type { RootState } from '../store';
 import { logout } from '@/slices /authSlice';
-import { toast } from 'sonner';
+// import { toast } from 'sonner';
 
 
 const Header = () => {
@@ -52,7 +52,7 @@ const Header = () => {
           { isAuthenticated  && <Link to= "/signin">
                 <Button size="sm" onClick={() => { 
                     dispatch(logout());
-                    toast.success("user logout successfully")
+                    // toast.success("user logout successfully")
                     }}>
                   Logout
                 </Button>
