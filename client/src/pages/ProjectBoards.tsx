@@ -4,9 +4,9 @@ import Header from '../components/Header';
 import CreateBoard from '../components/CreateBoard';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { FolderKanban, Users, Calendar, AlertTriangle } from 'lucide-react';
-import { useSelector } from 'react-redux';
-import type { RootState } from '@/store';
+import { FolderKanban, Users, Calendar } from 'lucide-react';
+// import { useSelector } from 'react-redux';
+// import type { RootState } from '@/store';
 import axios from 'axios';
 import { toast } from 'sonner';
 import { Trash2 } from 'lucide-react';
@@ -20,7 +20,7 @@ interface Board {
 }
 
 const ProjectBoards = () => {
-  const {user,  isAuthenticated} = useSelector((state: RootState) => state.auth);
+  // const {user,  isAuthenticated} = useSelector((state: RootState) => state.auth);
   const [deleteBoard, setDeleteBoard] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [boards, setBoards] = useState<Board[]>([]);
@@ -73,7 +73,7 @@ const ProjectBoards = () => {
     setDeleteBoard(boardId);
       try {
         const res = await axios.delete(`http://localhost:3000/api/board/${boardId}`,{ withCredentials: true })
-        console.log("board delete Successfully")
+        console.log("board delete Successfully",res)
         
       } catch (error) {
         console.error(error)

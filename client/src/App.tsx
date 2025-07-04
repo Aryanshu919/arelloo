@@ -6,7 +6,7 @@ import { Toaster } from "sonner";
 import SignInPage from "./pages/SignIn";
 import ProjectBoards from "./pages/ProjectBoards";
 import ProjectBoardView from "./pages/ProjectBoardView";
-import PrivateRoute from "./components/PrivateRoute";
+// import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
   return (
