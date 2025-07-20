@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { CircleX } from 'lucide-react';
+import { CircleX, Divide } from 'lucide-react';
 import axios from 'axios';
 import { MessageSquareMore } from 'lucide-react';
 import { Input } from './ui/input';
@@ -44,6 +44,9 @@ const CardEditModal: React.FC<CardEditModalProps> = ({ isVisible, cardId, onClos
     const [comments, setComments] = useState<Comment[]>([]);
     const [content, setContent] = useState("")
     const [loading, setLoading] = useState(true);
+    const [description, setDescription] = useState<string | null>(null);
+    const [isDesEditing, setIsDesEditing] = useState(false);
+    const [tempDescription, setTempDescription] = useState(card?.description || '');
 
     const { user } = useSelector((state: RootState) => state.auth);
     
@@ -62,7 +65,7 @@ const CardEditModal: React.FC<CardEditModalProps> = ({ isVisible, cardId, onClos
         console.log("Could not fetch board Details")
       }
     })()
-  }, [content])
+  }, [loading, content])
   
   const handleAddComment = async () => {
     console.log("adding comment ")
@@ -70,7 +73,7 @@ const CardEditModal: React.FC<CardEditModalProps> = ({ isVisible, cardId, onClos
    try {
      if(user){
       const authorId = user.id
-      const res = await axios.post(`http://localhost:3000/api/comment`,{content, cardId, authorId }, {withCredentials: true});
+      const res = await axios.post(`http://localhost:3000/api/comments`,{content, cardId, authorId }, {withCredentials: true});
       console.log("comment created", res)
       // toast.success("comment created successfully");
       setContent("")
@@ -81,6 +84,20 @@ const CardEditModal: React.FC<CardEditModalProps> = ({ isVisible, cardId, onClos
     
    }
      
+  }
+
+  const handleDescription = async () => {
+    try {
+      const res = await axios.patch(`http://localhost:3000/api/card/${cardId}`, { description: tempDescription } , { withCredentials: true})
+      console.log(res)
+      console.log("description" , tempDescription)
+      setTempDescription(card?.description);
+      
+    } catch (error) {
+      console.error(error)
+    }
+      setIsDesEditing(false)
+      
   }
 
   if(!isVisible) return null;
@@ -109,19 +126,35 @@ const CardEditModal: React.FC<CardEditModalProps> = ({ isVisible, cardId, onClos
             </div>
 
             {/* Description */}
-            <div>
-              <div className="flex items-center gap-2 text-gray-700">
+             <div className="flex items-center gap-2 text-gray-700">
                 <NotebookText className="w-5 h-5" />
                 <h3 className="text-xl font-semibold">Description</h3>
-              </div>
+             </div>
+            {
+              (card?.description === null || isDesEditing || card?.description === "") ?
+              <div>
+                            <div>
               <div className="mt-2">
                 <textarea
+                  value={tempDescription}
+                   onChange={(e) => setTempDescription(e.target.value)}
                   className="ml-4 w-[90%] h-40 resize-none p-3 bg-gray-50 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                   placeholder="Add a description..."
                 ></textarea>
               </div>
-              <Button className="mt-3 w-full">Save</Button>
+              <Button onClick={handleDescription} className="mt-3 w-full">Save</Button>
             </div>
+              </div>  : <div className='flex justify-between mx-1'>
+                <div>{card?.description}</div>
+                <div>
+                  <Button 
+                  size="sm"
+                  onClick={()=> setIsDesEditing(true)}
+                  className='text-white '>
+                    edit</Button></div>
+              </div>
+            }
+
           </div>
 
           {/* Right Panel */}

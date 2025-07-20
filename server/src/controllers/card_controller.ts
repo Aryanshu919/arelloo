@@ -43,7 +43,9 @@ export const getCardById = async (req: Request, res: Response) => {
 };
 
 export const updateCard = async (req: Request, res: Response) => {
+  console.log("logging the request body", req.body)
   const parsed = updateCardSchema.safeParse(req.body);
+  console.log("inside updateCard controller",parsed)
   if (!parsed.success){
     res.status(400).json(parsed.error.format());
     return 
@@ -51,8 +53,11 @@ export const updateCard = async (req: Request, res: Response) => {
 
   const card = await prisma.card.update({
     where: { id: req.params.id },
-    data: parsed.data,
+    data: {
+      description: parsed.data.description,
+    }
   });
+
   res.json(card);
 };
 

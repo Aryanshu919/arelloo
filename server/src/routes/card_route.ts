@@ -20,7 +20,7 @@ cardRouter.use(verifyUser);
 cardRouter.post('/', createCard);
 cardRouter.get('/list/:id', getCardsByList);
 cardRouter.get('/:id', getCardById);
-cardRouter.put('/:id', updateCard);
+cardRouter.patch('/:id', updateCard);
 cardRouter.delete('/:id',deleteCard);
 cardRouter.post('/:id/assign', assignUserToCard);
 cardRouter.delete('/:id/unassign/:uid', removeUserFromCard);
