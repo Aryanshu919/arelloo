@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { CircleX, Divide } from 'lucide-react';
+import { CircleX } from 'lucide-react';
 import axios from 'axios';
 import { MessageSquareMore } from 'lucide-react';
 import { Input } from './ui/input';
@@ -44,7 +44,7 @@ const CardEditModal: React.FC<CardEditModalProps> = ({ isVisible, cardId, onClos
     const [comments, setComments] = useState<Comment[]>([]);
     const [content, setContent] = useState("")
     const [loading, setLoading] = useState(true);
-    const [description, setDescription] = useState<string | null>(null);
+    // const [description, setDescription] = useState<string | null>(null);
     const [isDesEditing, setIsDesEditing] = useState(false);
     const [tempDescription, setTempDescription] = useState(card?.description || '');
 
@@ -91,7 +91,7 @@ const CardEditModal: React.FC<CardEditModalProps> = ({ isVisible, cardId, onClos
       const res = await axios.patch(`http://localhost:3000/api/card/${cardId}`, { description: tempDescription } , { withCredentials: true})
       console.log(res)
       console.log("description" , tempDescription)
-      setTempDescription(card?.description);
+      // setTempDescription(card?.description);
       
     } catch (error) {
       console.error(error)
